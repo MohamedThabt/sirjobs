@@ -18,7 +18,8 @@ feedparser==6.0.12
 
 
 # Job Searching
-jobspy==0.31.0
+python-jobspy==1.1.82
+pandas
 
 # Web Scraping
 beautifulsoup4==4.14.3

@@ -1,4 +1,4 @@
-from contextlib import asynccontextmanager
+
 
 from fastapi import FastAPI
 from slowapi import _rate_limit_exceeded_handler
@@ -11,22 +11,13 @@ from config.logger import setup_logging
 from config.middleware import RequestLoggingMiddleware
 from config.settings import settings
 from routes.api import router as api_router
-from scheduler.scheduler import shutdown_scheduler, start_scheduler
 
 setup_logging()
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    start_scheduler()
-    yield
-    shutdown_scheduler()
-
 
 _is_production = settings.app_env.lower() == "production"
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    lifespan=lifespan,
     docs_url=None if _is_production else "/docs",
     redoc_url=None if _is_production else "/redoc",
     openapi_url=None if _is_production else "/openapi.json",
@@ -45,3 +36,8 @@ app.include_router(api_router, prefix="/api")
 @app.get("/")
 def read_root():
     return {"message": "API is running"}
+
+if __name__ == "__main__":
+    import uvicorn
+    # This block allows you to run the server simply via `python main.py`
+    uvicorn.run("main:app", host="127.0.0.1", port=8005, reload=True)
