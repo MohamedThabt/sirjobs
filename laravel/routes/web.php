@@ -9,6 +9,9 @@ Route::get('/', function () {
 })->name('home');
 
 // Public — no auth required
+Route::get('/sources', function () {
+    return Inertia::render('Sources');
+})->name('sources');
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
 Route::post('/jobs/refresh', [JobController::class, 'refresh'])->name('jobs.refresh');
 Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
