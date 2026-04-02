@@ -6,8 +6,6 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
-from app.db.base import Base
-from app.db.session import engine
 from config.exceptions import register_exception_handlers
 from config.limiter import limiter
 from config.logger import setup_logging
@@ -42,14 +40,9 @@ def get_allowed_origins() -> list[str]:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables on startup
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
     start_scheduler()
     yield
-    # Shutdown scheduler and dispose engine on shutdown
     shutdown_scheduler()
-    await engine.dispose()
 
 
 _is_production = settings.app_env.lower() == "production"
