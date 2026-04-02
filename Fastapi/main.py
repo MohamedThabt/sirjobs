@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -15,28 +14,6 @@ from routes.api import router as api_router
 from scheduler.scheduler import shutdown_scheduler, start_scheduler
 
 setup_logging()
-# Hardcoded CORS origins for production deployment Because Dokploy  environment variables problem
-HARDCODED_CORS_ORIGINS = [
-    "https://worldmonitor.sirthabet.dev",
-]
-
-
-# Parse CORS origins from environment variable
-def parse_cors_origins(raw_origins: str) -> list[str]:
-    origins: list[str] = []
-    for origin in raw_origins.split(","):
-        normalized_origin = origin.strip().strip('"').strip("'").rstrip("/")
-        if normalized_origin:
-            origins.append(normalized_origin)
-    return origins
-
-
-def get_allowed_origins() -> list[str]:
-    env_origins = parse_cors_origins(settings.cors_origins)
-    ordered_origins = [*HARDCODED_CORS_ORIGINS, *env_origins]
-    # Keep order while removing duplicates.
-    return list(dict.fromkeys(ordered_origins))
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -58,13 +35,7 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=get_allowed_origins(),
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
 app.add_middleware(RequestLoggingMiddleware)
 register_exception_handlers(app)
 
