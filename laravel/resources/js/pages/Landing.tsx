@@ -10,6 +10,8 @@ import { Footer } from '@/components/landing/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
+import { JobSourcesCloud } from '@/components/landing/JobSourcesCloud';
+
 declare const route: any;
 
 export default function Landing() {
@@ -21,6 +23,7 @@ export default function Landing() {
       
       <main>
         <Hero />
+        <JobSourcesCloud />
         <Features />
         <HowItWorks />
         <ProductPreview />

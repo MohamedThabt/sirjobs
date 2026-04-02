@@ -54,4 +54,32 @@ class JobListing extends Model
 
         return $query->where('location', 'like', "%{$location}%");
     }
+
+    /**
+     * Scope: filter by source array.
+     */
+    public function scopeSource($query, ?array $sources)
+    {
+        if (empty($sources)) {
+            return $query;
+        }
+
+        return $query->whereIn('source', $sources);
+    }
+
+    /**
+     * Scope: filter explicitly by remote.
+     */
+    public function scopeRemoteOnly($query, bool $isRemote)
+    {
+        if (! $isRemote) {
+            return $query;
+        }
+
+        return $query->where(function ($q) {
+            $q->where('location', 'like', '%remote%')
+              ->orWhere('tags', 'like', '%remote%')
+              ->orWhere('title', 'like', '%remote%');
+        });
+    }
 }
