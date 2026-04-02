@@ -5,7 +5,7 @@ import { Footer } from '@/components/landing/Footer';
 import {
     Search, MapPin, Briefcase, Clock, Building2, Tag,
     AlertCircle, Loader2, RefreshCw, Wifi, ArrowRight,
-    SlidersHorizontal, X, Globe
+    SlidersHorizontal, X, Globe, LayoutGrid, List
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -97,6 +97,7 @@ export default function JobIndex({ jobs, filters, availableSources, stats }: Pro
 
     const [isLoading,    setIsLoading]    = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [viewMode,     setViewMode]     = useState<'list' | 'database'>('list');
 
     /* ── actions ── */
     const handleSearch = (e?: React.FormEvent) => {
@@ -272,8 +273,28 @@ export default function JobIndex({ jobs, filters, availableSources, stats }: Pro
                         )}
                     </form>
 
-                    {/* Right: sync + mobile filter toggle */}
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    {/* Right: view toggle + sync + mobile filter toggle */}
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                        {/* View Mode Toggle (Desktop only) */}
+                        <div className="bg-muted p-1 rounded-lg hidden sm:flex items-center gap-1 border border-border">
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('list')}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                                title="List View"
+                            >
+                                <LayoutGrid className="h-4 w-4" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('database')}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'database' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                                title="Database View"
+                            >
+                                <List className="h-4 w-4" />
+                            </button>
+                        </div>
+
                         <button
                             type="button"
                             onClick={handleRefresh}
@@ -403,12 +424,14 @@ export default function JobIndex({ jobs, filters, availableSources, stats }: Pro
                                     Sync latest jobs
                                 </Button>
                             </div>
-                        ) : (
+                        ) : viewMode === 'list' ? (
                             <div className="flex flex-col gap-3">
                                 {jobs.map(job => (
                                     <JobCard key={job.id} job={job} />
                                 ))}
                             </div>
+                        ) : (
+                            <JobTable jobs={jobs} />
                         )}
                     </div>
                 </div>
@@ -519,5 +542,76 @@ function JobCard({ job }: { job: { id: number; source: string; title: string; co
                 </div>
             </div>
         </Link>
+    );
+}
+
+function JobTable({ jobs }: { jobs: Job[] }) {
+    return (
+        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left border-collapse">
+                    <thead className="bg-muted/40 text-[11px] uppercase tracking-wider font-semibold text-muted-foreground border-b border-border">
+                        <tr>
+                            <th className="px-5 py-3 whitespace-nowrap">Job Title</th>
+                            <th className="px-5 py-3 whitespace-nowrap">Company</th>
+                            <th className="px-5 py-3 whitespace-nowrap">Location</th>
+                            <th className="px-5 py-3 whitespace-nowrap hidden lg:table-cell">Salary</th>
+                            <th className="px-5 py-3 whitespace-nowrap text-right">Posted</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                        {jobs.map(job => {
+                            const remote = ['remote', 'worldwide', 'anywhere'].some(w =>
+                                job.location?.toLowerCase().includes(w) || job.title?.toLowerCase().includes(w)
+                            );
+                            return (
+                                <tr key={job.id} className="hover:bg-muted/30 transition-colors group">
+                                    <td className="px-5 py-3.5 max-w-[280px]">
+                                        <div className="flex items-center gap-2.5">
+                                            <span className={`h-2.5 w-2.5 rounded-full flex-shrink-0 ${getSourceDot(job.source)}`} />
+                                            <Link href={`/jobs/${job.id}`} className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                                                {job.title}
+                                            </Link>
+                                        </div>
+                                    </td>
+                                    <td className="px-5 py-3.5 text-muted-foreground max-w-[200px] truncate">
+                                        {job.company ? (
+                                            <span className="flex items-center gap-1.5">
+                                                <Building2 className="h-3.5 w-3.5 opacity-60" />
+                                                <span className="truncate">{job.company}</span>
+                                            </span>
+                                        ) : '-'}
+                                    </td>
+                                    <td className="px-5 py-3.5 max-w-[200px] truncate">
+                                        <div className="flex items-center gap-2">
+                                            <span className="truncate">{job.location || '-'}</span>
+                                            {remote && (
+                                                <span className="px-1.5 py-0.5 rounded text-[10px] bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 font-bold tracking-wider uppercase flex-shrink-0">Remote</span>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="px-5 py-3.5 hidden lg:table-cell">
+                                        {job.salary ? (
+                                            <span className="px-2 py-0.5 rounded textxs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 whitespace-nowrap">
+                                                {job.salary}
+                                            </span>
+                                        ) : (
+                                            <span className="text-muted-foreground opacity-50">-</span>
+                                        )}
+                                    </td>
+                                    <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                                        <div className="flex items-center justify-end gap-1.5 text-muted-foreground opacity-70 group-hover:opacity-100 transition-opacity">
+                                            <Clock className="h-3.5 w-3.5 hidden sm:block" />
+                                            {job.posted_at ? timeAgo(job.posted_at) : '-'}
+                                            <ArrowRight className="h-4 w-4 ml-2 text-muted-foreground opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     );
 }
