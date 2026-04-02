@@ -4,6 +4,7 @@ import { Footer } from '@/components/landing/Footer';
 import { ExternalLink, Database, Globe, Network, Rss } from 'lucide-react';
 
 const SOURCES = [
+  // Original Integrations
   { 
     name: 'Adzuna',         
     logo: '/images/sources/adzuna.png',        
@@ -61,14 +62,6 @@ const SOURCES = [
     description: 'Curated lists of the most reliable remote roles across development, design, and management disciplines.'
   },
   { 
-    name: 'Google Jobs',    
-    logo: '/images/sources/google.png',        
-    url: 'https://jobs.google.com',
-    type: 'Scraper Endpoint',
-    icon: Globe,
-    description: 'Using specialized scraping logic to extract highly localized, hard-to-find corporate listings direct from Google.'
-  },
-  { 
     name: 'Jobicy',         
     logo: '/images/sources/jobicy.png',        
     url: 'https://jobicy.com',
@@ -83,6 +76,104 @@ const SOURCES = [
     type: 'API Integration',
     icon: Database,
     description: 'Official Y Combinator job postings and highly technical roles straight from the Hacker News API.'
+  },
+  
+  // New Native Scraper & API Endpoints
+  { 
+    name: 'LinkedIn',         
+    logo: '/images/sources/linkedin.svg',        
+    url: 'https://www.linkedin.com',
+    type: 'Scraper Endpoint',
+    icon: Globe,
+    description: 'The world\'s largest professional network, scraped via JobSpy with anti-bot bypassing to extract full job descriptions and company data.'
+  },
+  { 
+    name: 'Indeed',       
+    logo: '/images/sources/indeed.svg',      
+    url: 'https://www.indeed.com',
+    type: 'Scraper Endpoint',
+    icon: Network,
+    description: 'A global search engine for job listings, pulling in millions of roles from across the world into one powerful feed.'
+  },
+  { 
+    name: 'Glassdoor',           
+    logo: '/images/sources/glassdoor.svg',          
+    url: 'https://www.glassdoor.com',
+    type: 'Scraper Endpoint',
+    icon: Database,
+    description: 'Rich job listings paired with company reviews and salary insights to give a complete picture of the role.'
+  },
+  { 
+    name: 'Google Jobs',       
+    logo: '/images/sources/google.svg',       
+    url: 'https://jobs.google.com',
+    type: 'Scraper Endpoint',
+    icon: Globe,
+    description: 'Using specialized scraping logic to extract highly localized, hard-to-find corporate listings direct from Google.'
+  },
+  { 
+    name: 'ZipRecruiter',      
+    logo: '/images/sources/ziprecruiter.svg',     
+    url: 'https://www.ziprecruiter.com',
+    type: 'Scraper Endpoint',
+    icon: Network,
+    description: 'A leading online employment marketplace in North America, leveraging AI to connect millions of employers and job seekers.'
+  },
+  { 
+    name: 'Bayt',       
+    logo: '/images/sources/bayt.svg',      
+    url: 'https://www.bayt.com',
+    type: 'API Integration',
+    icon: Database,
+    description: 'The leading job site in the Middle East and North Africa, connecting job seekers with employers looking to hire.'
+  },
+  { 
+    name: 'Wuzzuf', 
+    logo: '/images/sources/wuzzuf.svg', 
+    url: 'https://wuzzuf.net',
+    type: 'Scraper Endpoint',
+    icon: Globe,
+    description: 'Egypt\'s #1 job site, providing tech and professional roles for the local and regional markets.'
+  },
+  { 
+    name: 'Forasna',    
+    logo: '/images/sources/forasna.svg',        
+    url: 'https://forasna.com',
+    type: 'Scraper Endpoint',
+    icon: Database,
+    description: 'A sister site to Wuzzuf, focusing on a broader range of job categories and skill levels in the Egyptian market.'
+  },
+  { 
+    name: 'Jobzella',         
+    logo: '/images/sources/jobzella.svg',        
+    url: 'https://www.jobzella.com',
+    type: 'Scraper Endpoint',
+    icon: Network,
+    description: 'A Middle East professional network and job board featuring comprehensive listings and career tools.'
+  },
+  { 
+    name: 'Akhtaboot',         
+    logo: '/images/sources/akhtaboot.svg',        
+    url: 'https://www.akhtaboot.com',
+    type: 'Scraper Endpoint',
+    icon: Globe,
+    description: 'An online career network serving the MENA region, dedicated to assisting job seekers in finding their ideal careers.'
+  },
+  { 
+    name: 'Tanqeeb',         
+    logo: '/images/sources/tanqeeb.svg',        
+    url: 'https://www.tanqeeb.com',
+    type: 'Playwright Scraper',
+    icon: Database,
+    description: 'A major job search engine in the Middle East and North Africa, indexing jobs from various company portals and boards.'
+  },
+  { 
+    name: 'GulfTalent',         
+    logo: '/images/sources/gulftalent.svg',        
+    url: 'https://www.gulftalent.com',
+    type: 'Playwright Scraper',
+    icon: Globe,
+    description: 'The leading online recruitment portal in the Middle East, used by over 10 million experienced professionals.'
   },
 ];
 

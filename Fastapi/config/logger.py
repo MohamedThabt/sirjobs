@@ -25,6 +25,10 @@ class JSONFormatter(logging.Formatter):
             "fetched", "failed", "failed_sources",
             "article_title", "location_name", "location_type",
             "location_rank", "locations_found", "geocode_status",
+            # Job collector keys
+            "collector_source", "collector_region", "jobs_collected",
+            "collector_duration_ms", "collector_error", "collector_status",
+            "successful_sources", "total_collected",
         ):
             value = getattr(record, key, None)
             if value is not None:
