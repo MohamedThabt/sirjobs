@@ -57,6 +57,7 @@ const SOURCE_META: Record<string, { label: string; dot: string }> = {
     working_nomads_rss: { label: 'Working Nomads',   dot: 'bg-orange-500' },
     serpapi_google_jobs:{ label: 'Google Jobs',      dot: 'bg-red-500' },
     jobicy:             { label: 'Jobicy',            dot: 'bg-cyan-500' },
+    hacker_news:        { label: 'Hacker News',      dot: 'bg-orange-600' },
 };
 
 function getSourceLabel(key: string) {

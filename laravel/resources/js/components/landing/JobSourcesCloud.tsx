@@ -10,6 +10,7 @@ const SOURCES = [
   { name: 'Working Nomads', logo: '/images/sources/workingnomads.png', url: 'https://www.workingnomads.com' },
   { name: 'Google Jobs',    logo: '/images/sources/google.png',        url: 'https://jobs.google.com' },
   { name: 'Jobicy',         logo: '/images/sources/jobicy.png',        url: 'https://jobicy.com' },
+  { name: 'Hacker News',    logo: '/images/sources/hacker_news.png',   url: 'https://news.ycombinator.com/jobs' },
 ];
 
 export function JobSourcesCloud() {

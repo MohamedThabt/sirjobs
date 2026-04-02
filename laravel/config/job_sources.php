@@ -79,4 +79,10 @@ return [
         'count'    => 50,
     ],
 
+    'hacker_news' => [
+        'driver'   => 'hacker_news',
+        'active'   => true,
+        'base_url' => 'https://hacker-news.firebaseio.com/v0',
+    ],
+
 ];

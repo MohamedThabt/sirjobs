@@ -76,6 +76,14 @@ const SOURCES = [
     icon: Database,
     description: 'A modern job board indexing verified remote teams primarily residing in North America and Europe.'
   },
+  { 
+    name: 'Hacker News',         
+    logo: '/images/sources/hacker_news.png',        
+    url: 'https://news.ycombinator.com/jobs',
+    type: 'API Integration',
+    icon: Database,
+    description: 'Official Y Combinator job postings and highly technical roles straight from the Hacker News API.'
+  },
 ];
 
 export default function SourcesPage() {

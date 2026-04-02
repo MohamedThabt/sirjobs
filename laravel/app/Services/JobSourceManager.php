@@ -26,8 +26,9 @@ class JobSourceManager
         'reed_api'  => ReedApiService::class,
         'the_muse'  => TheMuseService::class,
         'arbeitnow' => ArbeitnowService::class,
-        'serpapi'    => SerpApiGoogleJobsService::class,
+        'serpapi'   => SerpApiGoogleJobsService::class,
         'jobicy'    => JobicyService::class,
+        'hacker_news' => \App\Services\JobSources\Apis\HackerNewsService::class,
     ];
 
     /**
