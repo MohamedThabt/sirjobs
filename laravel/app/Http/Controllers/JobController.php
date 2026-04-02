@@ -40,6 +40,29 @@ class JobController extends Controller
             ->pluck('source')
             ->toArray();
 
+        // Extract distinct locations
+        $availableLocations = JobListing::whereNotNull('location')
+            ->where('location', '!=', '')
+            ->distinct()
+            ->pluck('location')
+            ->sort()
+            ->values()
+            ->toArray();
+
+        // Extract distinct keywords (from tags) to populate dropdown
+        $allTags = JobListing::whereNotNull('tags')->pluck('tags');
+        $availableKeywords = collect();
+        foreach ($allTags as $tagsArray) {
+            if (is_array($tagsArray)) {
+                foreach ($tagsArray as $tag) {
+                    if (is_string($tag)) {
+                        $availableKeywords->push(strtolower($tag));
+                    }
+                }
+            }
+        }
+        $availableKeywords = $availableKeywords->unique()->sort()->values()->toArray();
+
         // Query persisted jobs from the database with filters
         $jobs = JobListing::query()
             ->search($job)
@@ -58,8 +81,10 @@ class JobController extends Controller
                 'sources'  => $sources,
                 'remote'   => $remote,
             ],
-            'availableSources' => $availableSources,
-            'stats'   => $collectionResult, // Only present if auto-collected
+            'availableSources'   => $availableSources,
+            'availableLocations' => $availableLocations,
+            'availableKeywords'  => $availableKeywords,
+            'stats'              => $collectionResult, // Only present if auto-collected
         ]);
     }
 

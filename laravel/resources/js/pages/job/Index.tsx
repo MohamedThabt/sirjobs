@@ -42,6 +42,8 @@ interface Props {
     jobs: Job[];
     filters: Filters;
     availableSources: string[];
+    availableLocations: string[];
+    availableKeywords: string[];
     stats: Stats | null;
 }
 
@@ -88,7 +90,7 @@ const isRemoteJob = (job: Job) =>
 /* ═══════════════════════════════════════════════════════════════════════════
    PAGE
 ═══════════════════════════════════════════════════════════════════════════ */
-export default function JobIndex({ jobs, filters, availableSources, stats }: Props) {
+export default function JobIndex({ jobs, filters, availableSources, availableLocations, availableKeywords, stats }: Props) {
     const [jobQuery,        setJobQuery]        = useState(filters.job      || '');
     const [locationQuery,   setLocationQuery]   = useState(filters.location || '');
     const [selectedSources, setSelectedSources] = useState<string[]>(filters.sources || []);
@@ -147,14 +149,17 @@ export default function JobIndex({ jobs, filters, availableSources, stats }: Pro
                 </label>
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                    <input
+                    <select
                         id="search-job"
-                        type="text"
-                        placeholder="Title, role, skill…"
                         value={jobQuery}
                         onChange={e => setJobQuery(e.target.value)}
-                        className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all"
-                    />
+                        className="w-full h-10 pl-9 pr-8 text-sm rounded-lg border border-input bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all appearance-none cursor-pointer"
+                    >
+                        <option value="">All Roles / Keywords</option>
+                        {availableKeywords.map(kw => (
+                            <option key={kw} value={kw}>{kw.charAt(0).toUpperCase() + kw.slice(1)}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -165,15 +170,18 @@ export default function JobIndex({ jobs, filters, availableSources, stats }: Pro
                 </label>
                 <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                    <input
+                    <select
                         id="search-location"
-                        type="text"
-                        placeholder="City or country…"
                         value={locationQuery}
                         onChange={e => setLocationQuery(e.target.value)}
                         disabled={isRemote}
-                        className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                    />
+                        className="w-full h-10 pl-9 pr-8 text-sm rounded-lg border border-input bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all disabled:opacity-40 disabled:cursor-not-allowed appearance-none cursor-pointer"
+                    >
+                        <option value="">All Locations</option>
+                        {availableLocations.map(loc => (
+                            <option key={loc} value={loc}>{loc}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -259,13 +267,16 @@ export default function JobIndex({ jobs, filters, availableSources, stats }: Pro
                         className="hidden md:flex flex-1 max-w-lg items-center gap-2 bg-muted rounded-full px-4 py-2 border border-border"
                     >
                         <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                        <input
-                            type="text"
-                            placeholder="Search jobs…"
+                        <select
                             value={jobQuery}
                             onChange={e => setJobQuery(e.target.value)}
-                            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                        />
+                            className="flex-1 bg-transparent text-sm outline-none cursor-pointer appearance-none text-foreground w-full"
+                        >
+                            <option value="">Quick search roles…</option>
+                            {availableKeywords.map(kw => (
+                                <option key={kw} value={kw}>{kw.charAt(0).toUpperCase() + kw.slice(1)}</option>
+                            ))}
+                        </select>
                         {jobQuery && (
                             <button type="button" onClick={() => setJobQuery('')}>
                                 <X className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
@@ -565,13 +576,17 @@ function JobTable({ jobs }: { jobs: Job[] }) {
                                 job.location?.toLowerCase().includes(w) || job.title?.toLowerCase().includes(w)
                             );
                             return (
-                                <tr key={job.id} className="hover:bg-muted/30 transition-colors group">
+                                <tr 
+                                    key={job.id} 
+                                    onClick={() => router.visit(`/jobs/${job.id}`)}
+                                    className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                                >
                                     <td className="px-5 py-3.5 max-w-[280px]">
                                         <div className="flex items-center gap-2.5">
                                             <span className={`h-2.5 w-2.5 rounded-full flex-shrink-0 ${getSourceDot(job.source)}`} />
-                                            <Link href={`/jobs/${job.id}`} className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                                            <span className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
                                                 {job.title}
-                                            </Link>
+                                            </span>
                                         </div>
                                     </td>
                                     <td className="px-5 py-3.5 text-muted-foreground max-w-[200px] truncate">
