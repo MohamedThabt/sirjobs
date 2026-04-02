@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('company')->nullable();
             $table->string('location')->nullable()->index();
+            $table->string('region')->nullable()->index();    // e.g. "global", "egypt", "middle_east", "gulf"
             $table->text('url');
             $table->text('description')->nullable();
             $table->string('salary')->nullable();
