@@ -85,4 +85,11 @@ return [
         'base_url' => 'https://hacker-news.firebaseio.com/v0',
     ],
 
+    'fastapi_collector' => [
+        'driver'          => 'fastapi_collector',
+        'active'          => true,
+        'base_url'        => env('FASTAPI_COLLECTOR_URL', 'http://127.0.0.1:8005/api'),
+        'timeout'         => 120,
+    ],
+
 ];

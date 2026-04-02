@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Services\JobSources\Apis\AdzunaService;
 use App\Services\JobSources\Apis\ArbeitnowService;
+use App\Services\JobSources\Apis\FastApiCollectorService;
 use App\Services\JobSources\Apis\ReedApiService;
 use App\Services\JobSources\Apis\RemotiveService;
 use App\Services\JobSources\Apis\TheMuseService;
 use App\Services\JobSources\Aggregators\JobicyService;
 use App\Services\JobSources\Aggregators\SerpApiGoogleJobsService;
+use App\Services\JobSources\Apis\HackerNewsService;
 use App\Services\JobSources\BaseJobSourceService;
 use App\Services\JobSources\Rss\ReedRssService;
 use App\Services\JobSources\Rss\RemoteOkRssService;
@@ -28,7 +30,8 @@ class JobSourceManager
         'arbeitnow' => ArbeitnowService::class,
         'serpapi'   => SerpApiGoogleJobsService::class,
         'jobicy'    => JobicyService::class,
-        'hacker_news' => \App\Services\JobSources\Apis\HackerNewsService::class,
+        'hacker_news' =>HackerNewsService::class,
+        'fastapi_collector' => FastApiCollectorService::class,
     ];
 
     /**
