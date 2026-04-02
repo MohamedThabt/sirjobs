@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.models.schemas import CollectJobsRequest, JobListingResponse
 from app.services.base_collector import BaseCollectorService
+from app.services.collectors.indeed_collector import _COUNTRY_CODE_MAP
 from app.services.collectors.jobspy_helpers import async_scrape_jobs, jobspy_df_to_listings
 
 
@@ -29,7 +30,10 @@ class GlassdoorCollectorService(BaseCollectorService):
         if params.hours_old:
             kwargs["hours_old"] = params.hours_old
         if params.country_indeed:
-            kwargs["country_indeed"] = params.country_indeed
+            country = _COUNTRY_CODE_MAP.get(
+                params.country_indeed.lower(), params.country_indeed
+            )
+            kwargs["country_indeed"] = country
 
         df = await async_scrape_jobs(kwargs)
         return jobspy_df_to_listings(df, self.source_name, self.region)

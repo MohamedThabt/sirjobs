@@ -81,8 +81,18 @@ async def collect_all(params: CollectJobsRequest) -> CollectJobsResponse:
             )
 
     elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
-    successful = [s.source for s in sources_summary if s.status == "success"]
+    successful = [s.source for s in sources_summary if s.status == "success" and s.jobs_count > 0]
+    zero_results = [s.source for s in sources_summary if s.status == "success" and s.jobs_count == 0]
     failed = [s.source for s in sources_summary if s.status == "failed"]
+
+    if zero_results:
+        logger.warning(
+            f"Collectors returned 0 jobs (may have failed silently or found no listings): {zero_results}",
+            extra={
+                "collector_status": "zero_results",
+                "zero_result_sources": zero_results,
+            },
+        )
 
     logger.info(
         f"Job collection finished — {len(all_jobs)} jobs from {len(successful)} sources in {elapsed_ms}ms",
@@ -90,6 +100,7 @@ async def collect_all(params: CollectJobsRequest) -> CollectJobsResponse:
             "collector_status": "batch_finished",
             "total_collected": len(all_jobs),
             "successful_sources": successful,
+            "zero_result_sources": zero_results,
             "failed_sources": failed,
             "collector_duration_ms": elapsed_ms,
         },
