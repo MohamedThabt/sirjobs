@@ -12,6 +12,8 @@ import { ArrowRight } from 'lucide-react';
 
 import { JobSourcesCloud } from '@/components/landing/JobSourcesCloud';
 
+import Team from '@/components/team';
+
 declare const route: any;
 
 export default function Landing() {
@@ -29,6 +31,8 @@ export default function Landing() {
         <ProductPreview />
         <OpportunityRadar />
         <Pricing />
+        
+        <Team />
         
         {/* Final CTA Section */}
         <section className="py-24 relative overflow-hidden">
