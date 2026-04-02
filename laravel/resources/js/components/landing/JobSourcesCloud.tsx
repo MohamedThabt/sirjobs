@@ -13,18 +13,18 @@ const SOURCES = [
   { name: 'Hacker News',    logo: '/images/sources/hacker_news.png',   url: 'https://news.ycombinator.com/jobs' },
   
   // New Native Scraper & API Integrations
-  { name: 'LinkedIn',     logo: '/images/sources/linkedin.svg',        url: 'https://www.linkedin.com' },
+  { name: 'LinkedIn',     logo: '/images/sources/linkedin.png',        url: 'https://www.linkedin.com' },
   { name: 'Indeed',       logo: '/images/sources/indeed.svg',          url: 'https://www.indeed.com' },
-  { name: 'Glassdoor',    logo: '/images/sources/glassdoor.svg',       url: 'https://www.glassdoor.com' },
-  { name: 'Google Jobs',  logo: '/images/sources/google.svg',          url: 'https://jobs.google.com' },
-  { name: 'ZipRecruiter', logo: '/images/sources/ziprecruiter.svg',    url: 'https://www.ziprecruiter.com' },
-  { name: 'Bayt',         logo: '/images/sources/bayt.svg',            url: 'https://www.bayt.com' },
-  { name: 'Wuzzuf',       logo: '/images/sources/wuzzuf.svg',          url: 'https://wuzzuf.net' },
-  { name: 'Forasna',      logo: '/images/sources/forasna.svg',         url: 'https://forasna.com' },
+  { name: 'Glassdoor',    logo: '/images/sources/glassdoor.png',       url: 'https://www.glassdoor.com' },
+  { name: 'Google Jobs',  logo: '/images/sources/google.png',          url: 'https://jobs.google.com' },
+  { name: 'ZipRecruiter', logo: '/images/sources/ziprecruiter.png',    url: 'https://www.ziprecruiter.com' },
+  { name: 'Bayt',         logo: '/images/sources/bayt.png',            url: 'https://www.bayt.com' },
+  { name: 'Wuzzuf',       logo: '/images/sources/wuzzuf.png',          url: 'https://wuzzuf.net' },
+  { name: 'Forasna',      logo: '/images/sources/forasna.png',         url: 'https://forasna.com' },
   { name: 'Jobzella',     logo: '/images/sources/jobzella.svg',        url: 'https://www.jobzella.com' },
-  { name: 'Akhtaboot',    logo: '/images/sources/akhtaboot.svg',       url: 'https://www.akhtaboot.com' },
+  { name: 'Akhtaboot',    logo: '/images/sources/akhtaboot.png',       url: 'https://www.akhtaboot.com' },
   { name: 'Tanqeeb',      logo: '/images/sources/tanqeeb.svg',         url: 'https://www.tanqeeb.com' },
-  { name: 'GulfTalent',   logo: '/images/sources/gulftalent.svg',      url: 'https://www.gulftalent.com' },
+  { name: 'GulfTalent',   logo: '/images/sources/gulftalent.png',      url: 'https://www.gulftalent.com' },
 ];
 
 export function JobSourcesCloud() {

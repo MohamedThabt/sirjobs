@@ -81,7 +81,7 @@ const SOURCES = [
   // New Native Scraper & API Endpoints
   { 
     name: 'LinkedIn',         
-    logo: '/images/sources/linkedin.svg',        
+    logo: '/images/sources/linkedin.png',        
     url: 'https://www.linkedin.com',
     type: 'Scraper Endpoint',
     icon: Globe,
@@ -97,7 +97,7 @@ const SOURCES = [
   },
   { 
     name: 'Glassdoor',           
-    logo: '/images/sources/glassdoor.svg',          
+    logo: '/images/sources/glassdoor.png',          
     url: 'https://www.glassdoor.com',
     type: 'Scraper Endpoint',
     icon: Database,
@@ -105,7 +105,7 @@ const SOURCES = [
   },
   { 
     name: 'Google Jobs',       
-    logo: '/images/sources/google.svg',       
+    logo: '/images/sources/google.png',       
     url: 'https://jobs.google.com',
     type: 'Scraper Endpoint',
     icon: Globe,
@@ -113,7 +113,7 @@ const SOURCES = [
   },
   { 
     name: 'ZipRecruiter',      
-    logo: '/images/sources/ziprecruiter.svg',     
+    logo: '/images/sources/ziprecruiter.png',     
     url: 'https://www.ziprecruiter.com',
     type: 'Scraper Endpoint',
     icon: Network,
@@ -121,7 +121,7 @@ const SOURCES = [
   },
   { 
     name: 'Bayt',       
-    logo: '/images/sources/bayt.svg',      
+    logo: '/images/sources/bayt.png',      
     url: 'https://www.bayt.com',
     type: 'API Integration',
     icon: Database,
@@ -129,7 +129,7 @@ const SOURCES = [
   },
   { 
     name: 'Wuzzuf', 
-    logo: '/images/sources/wuzzuf.svg', 
+    logo: '/images/sources/wuzzuf.png', 
     url: 'https://wuzzuf.net',
     type: 'Scraper Endpoint',
     icon: Globe,
@@ -137,7 +137,7 @@ const SOURCES = [
   },
   { 
     name: 'Forasna',    
-    logo: '/images/sources/forasna.svg',        
+    logo: '/images/sources/forasna.png',        
     url: 'https://forasna.com',
     type: 'Scraper Endpoint',
     icon: Database,
@@ -153,7 +153,7 @@ const SOURCES = [
   },
   { 
     name: 'Akhtaboot',         
-    logo: '/images/sources/akhtaboot.svg',        
+    logo: '/images/sources/akhtaboot.png',        
     url: 'https://www.akhtaboot.com',
     type: 'Scraper Endpoint',
     icon: Globe,
@@ -169,7 +169,7 @@ const SOURCES = [
   },
   { 
     name: 'GulfTalent',         
-    logo: '/images/sources/gulftalent.svg',        
+    logo: '/images/sources/gulftalent.png',        
     url: 'https://www.gulftalent.com',
     type: 'Playwright Scraper',
     icon: Globe,
