@@ -674,9 +674,6 @@ function NotionTable({ jobs, onRefresh, isRefreshing }: { jobs: Job[]; onRefresh
                                     <td className="px-3 py-2 hidden sm:table-cell">
                                         {job.company ? (
                                             <div className="flex items-center gap-2 min-w-0">
-                                                <span className="h-5 w-5 rounded bg-muted flex items-center justify-center text-[9px] font-bold text-foreground/70 flex-shrink-0 uppercase">
-                                                    {job.company.charAt(0)}
-                                                </span>
                                                 <span className="text-muted-foreground truncate">{job.company}</span>
                                             </div>
                                         ) : (
