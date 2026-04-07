@@ -20,8 +20,9 @@ class ReedApiService extends BaseJobSourceService
             'resultsToTake' => 50,
         ];
 
-        if (! empty($params['job'])) {
-            $query['keywords'] = $params['job'];
+        $searchTerm = $this->buildSearchTerm($params);
+        if ($searchTerm) {
+            $query['keywords'] = $searchTerm;
         }
 
         if (! empty($params['location'])) {

@@ -21,11 +21,8 @@ class SerpApiGoogleJobsService extends BaseJobSourceService
             'api_key' => $apiKey,
         ];
 
-        if (! empty($params['job'])) {
-            $query['q'] = $params['job'];
-        } else {
-            $query['q'] = 'software engineer';  // default query required by API
-        }
+        $searchTerm = $this->buildSearchTerm($params);
+        $query['q'] = $searchTerm ?: 'software engineer';
 
         if (! empty($params['location'])) {
             $query['location'] = $params['location'];

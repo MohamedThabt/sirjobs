@@ -45,9 +45,9 @@ class RemoteOkRssService extends BaseJobSourceService
                 'guid'        => (string) ($item->guid ?? $item->link),
             ];
 
-            // Client-side keyword filter
-            if (! empty($params['job'])) {
-                $keyword = strtolower($params['job']);
+            $searchTerm = $this->buildSearchTerm($params);
+            if ($searchTerm) {
+                $keyword = strtolower($searchTerm);
                 if (! str_contains(strtolower($raw['title']), $keyword)
                     && ! str_contains(strtolower($raw['description']), $keyword)) {
                     continue;

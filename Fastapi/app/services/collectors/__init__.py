@@ -7,8 +7,6 @@ from app.services.collectors.google_jobs_collector import GoogleJobsCollectorSer
 from app.services.collectors.ziprecruiter_collector import ZipRecruiterCollectorService
 from app.services.collectors.bayt_collector import BaytCollectorService
 from app.services.collectors.wuzzuf_collector import WuzzufCollectorService
-from app.services.collectors.forasna_collector import ForasnaCollectorService
-from app.services.collectors.jobzella_collector import JobzellaCollectorService
 from app.services.collectors.akhtaboot_collector import AkhtabootCollectorService
 from app.services.collectors.tanqeeb_collector import TanqeebCollectorService
 from app.services.collectors.gulftalent_collector import GulfTalentCollectorService
@@ -21,8 +19,6 @@ ALL_COLLECTORS = [
     ZipRecruiterCollectorService,
     BaytCollectorService,
     WuzzufCollectorService,
-    ForasnaCollectorService,
-    JobzellaCollectorService,
     AkhtabootCollectorService,
     TanqeebCollectorService,
     GulfTalentCollectorService,
@@ -37,8 +33,6 @@ __all__ = [
     "ZipRecruiterCollectorService",
     "BaytCollectorService",
     "WuzzufCollectorService",
-    "ForasnaCollectorService",
-    "JobzellaCollectorService",
     "AkhtabootCollectorService",
     "TanqeebCollectorService",
     "GulfTalentCollectorService",

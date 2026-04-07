@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 import traceback
 from abc import ABC, abstractmethod
+from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 
 from config.logger import get_logger
@@ -44,6 +45,7 @@ class BaseCollectorService(ABC):
             )
 
             jobs = await self._collect(params)
+            jobs = self._filter_by_posted_days(jobs, params)
 
             elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
             logger.info(
@@ -93,6 +95,37 @@ class BaseCollectorService(ABC):
     # ------------------------------------------------------------------
     # Helpers shared across collectors
     # ------------------------------------------------------------------
+    supports_native_date_filter: bool = False
+
+    def _filter_by_posted_days(
+        self,
+        jobs: list[JobListingResponse],
+        params: CollectJobsRequest,
+    ) -> list[JobListingResponse]:
+        """Drop jobs older than the requested window when the source
+        doesn't support native date filtering."""
+        if self.supports_native_date_filter:
+            return jobs
+        hours = params.effective_hours_old
+        if hours is None:
+            return jobs
+
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+        filtered: list[JobListingResponse] = []
+        for job in jobs:
+            if not job.posted_at:
+                filtered.append(job)
+                continue
+            try:
+                dt = datetime.fromisoformat(job.posted_at.replace("Z", "+00:00"))
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                if dt >= cutoff:
+                    filtered.append(job)
+            except (ValueError, TypeError):
+                filtered.append(job)
+        return filtered
+
     def _build_salary_string(
         self,
         min_amount: float | None,

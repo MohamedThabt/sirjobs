@@ -10,6 +10,7 @@ from app.services.collectors.jobspy_helpers import async_scrape_jobs, jobspy_df_
 class ZipRecruiterCollectorService(BaseCollectorService):
     source_name = "zip_recruiter"
     region = "global"
+    supports_native_date_filter = True
 
     async def _collect(self, params: CollectJobsRequest) -> list[JobListingResponse]:
         kwargs: dict = {
@@ -26,8 +27,8 @@ class ZipRecruiterCollectorService(BaseCollectorService):
             kwargs["job_type"] = params.job_type
         if params.is_remote is not None:
             kwargs["is_remote"] = params.is_remote
-        if params.hours_old:
-            kwargs["hours_old"] = params.hours_old
+        if params.effective_hours_old:
+            kwargs["hours_old"] = params.effective_hours_old
 
         df = await async_scrape_jobs(kwargs)
         return jobspy_df_to_listings(df, self.source_name, self.region)

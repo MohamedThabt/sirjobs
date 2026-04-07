@@ -30,10 +30,10 @@ export default function Hero() {
           </Badge>
         </a>
         <h1 className="mt-8 font-extrabold text-4xl tracking-tight sm:text-5xl md:text-6xl md:leading-[1.1] lg:text-7xl text-foreground text-balance">
-          Stop Searching Jobs. <br/> <span className="text-primary">Start Targeting Opportunities.</span>
+          Skip the Search. <br/> <span className="text-primary">Land Global Tech Roles Faster.</span>
         </h1>
         <p className="mt-6 text-muted-foreground md:text-xl text-balance max-w-2xl mx-auto">
-          AI-powered job intelligence that finds, analyzes, and recommends the best jobs for you.
+          Discover the world’s freshest tech jobs in one powerful database, with AI that pinpoints the opportunities made for you.
         </p>
         <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
           <a href={typeof route !== 'undefined' ? route('register') : '/register'}>

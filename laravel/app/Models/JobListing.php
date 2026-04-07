@@ -27,20 +27,48 @@ class JobListing extends Model
         ];
     }
 
-    /**
-     * Scope: filter by search keyword (matches title, company, or description).
-     */
-    public function scopeSearch($query, ?string $keyword)
+    public function scopeRole($query, ?string $role)
     {
-        if (! $keyword) {
+        if (! $role) {
             return $query;
         }
 
-        return $query->where(function ($q) use ($keyword) {
-            $q->where('title', 'like', "%{$keyword}%")
-              ->orWhere('company', 'like', "%{$keyword}%")
-              ->orWhere('description', 'like', "%{$keyword}%");
+        return $query->where('title', 'like', "%{$role}%");
+    }
+
+    public function scopeTags($query, ?array $tags)
+    {
+        if (empty($tags)) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($tags) {
+            foreach ($tags as $tag) {
+                $tag = trim($tag);
+                if ($tag === '') {
+                    continue;
+                }
+                $q->orWhere('tags', 'like', "%{$tag}%");
+            }
         });
+    }
+
+    public function scopePostedWithinDays($query, ?int $days)
+    {
+        if (! $days) {
+            return $query;
+        }
+
+        return $query->where('posted_at', '>=', now()->subDays($days));
+    }
+
+    public function scopePostedWithinHours($query, ?int $hours)
+    {
+        if (! $hours) {
+            return $query;
+        }
+
+        return $query->where('posted_at', '>=', now()->subHours($hours));
     }
 
     /**

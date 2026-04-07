@@ -11,12 +11,29 @@ class FastApiCollectorService extends BaseJobSourceService
     {
         $baseUrl = rtrim($this->config['base_url'], '/');
 
-        $query = [
-            'search_term' => $params['job'] ?? 'software engineer',
-        ];
+        $query = [];
+
+        $keywords = $params['keywords'] ?? [];
+        $categories = $params['categories'] ?? [];
+
+        if (! empty($keywords) || ! empty($categories)) {
+            $parts = $keywords;
+            if (is_array($categories)) {
+                $parts = array_merge($parts, $categories);
+            }
+            $query['search_term'] = implode(' ', $parts);
+        }
 
         if (! empty($params['location'])) {
             $query['location'] = $params['location'];
+        }
+
+        if (! empty($params['posted_hours'])) {
+            $query['hours_old'] = (int) $params['posted_hours'];
+        }
+
+        if (! empty($params['posted_days'])) {
+            $query['posted_days'] = (int) $params['posted_days'];
         }
 
         if (isset($params['results_wanted'])) {

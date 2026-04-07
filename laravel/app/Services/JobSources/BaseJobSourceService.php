@@ -21,18 +21,35 @@ abstract class BaseJobSourceService
     /*  Abstract — each source must implement these                        */
     /* ------------------------------------------------------------------ */
 
-    /**
-     * Fetch raw jobs from the external source.
-     *
-     * @param  array  $params  ['job' => string|null, 'location' => string|null]
-     * @return array  Array of normalized job arrays.
-     */
     abstract public function fetchJobs(array $params = []): array;
 
-    /**
-     * Map a single raw API/RSS item to the canonical schema.
-     */
     abstract protected function normalizeJob(array $raw): array;
+
+    /**
+     * Build a single search string from the new keywords/categories params,
+     * falling back to the legacy 'job' param for backward compatibility.
+     */
+    protected function buildSearchTerm(array $params): ?string
+    {
+        $parts = [];
+
+        $keywords = $params['keywords'] ?? [];
+        if (is_array($keywords)) {
+            $parts = array_merge($parts, array_filter($keywords));
+        }
+
+        if (! empty($params['categories']) && is_array($params['categories'])) {
+            $parts = array_merge($parts, array_filter($params['categories']));
+        } elseif (! empty($params['category'])) {
+            $parts[] = $params['category'];
+        }
+
+        if (! empty($parts)) {
+            return implode(' ', $parts);
+        }
+
+        return $params['job'] ?? null;
+    }
 
     /* ------------------------------------------------------------------ */
     /*  HTTP helpers                                                        */
@@ -55,13 +72,30 @@ abstract class BaseJobSourceService
     /* ------------------------------------------------------------------ */
 
     /**
+     * Ensure required fields and defaults are set before storing/returning.
+     */
+    protected function sanitizeNormalized(array $normalized): ?array
+    {
+        if (empty($normalized['title']) || empty($normalized['url'])) {
+            Log::warning("[JobSource:{$this->sourceName}] Skipping job with missing title or URL", $normalized);
+            return null;
+        }
+
+        $normalized['source'] = $normalized['source'] ?? $this->sourceName;
+        $normalized['external_id'] = $normalized['external_id'] ?? md5($normalized['url']);
+
+        return $normalized;
+    }
+
+    /**
      * Upsert a normalized job into the database.
      * Uses source + external_id to prevent duplicates.
      */
     protected function persist(array $normalized): ?JobListing
     {
-        if (empty($normalized['title']) || empty($normalized['url'])) {
-            Log::warning("[JobSource:{$this->sourceName}] Skipping job with missing title or URL", $normalized);
+        $normalized = $this->sanitizeNormalized($normalized);
+
+        if (! $normalized) {
             return null;
         }
 
@@ -88,6 +122,47 @@ abstract class BaseJobSourceService
     /* ------------------------------------------------------------------ */
 
     /**
+     * Full pipeline: fetch and normalize without touching the DB.
+     * Returns normalized jobs ready for persistence.
+     */
+    public function collectNormalized(array $params = []): array
+    {
+        Log::info("[JobSource:{$this->sourceName}] Starting normalized collection", [
+            'params' => $params,
+        ]);
+
+        $rawJobs = $this->fetchJobs($params);
+
+        Log::info("[JobSource:{$this->sourceName}] Fetched {count} raw jobs", [
+            'count' => count($rawJobs),
+        ]);
+
+        $normalizedJobs = [];
+
+        foreach ($rawJobs as $raw) {
+            try {
+                $normalized = $this->normalizeJob($raw);
+                $normalized = $this->sanitizeNormalized($normalized);
+
+                if ($normalized) {
+                    $normalizedJobs[] = $normalized;
+                }
+            } catch (\Throwable $e) {
+                Log::warning("[JobSource:{$this->sourceName}] Failed to normalize a single job", [
+                    'error' => $e->getMessage(),
+                    'raw'   => array_slice($raw, 0, 5),
+                ]);
+            }
+        }
+
+        Log::info("[JobSource:{$this->sourceName}] Normalized collection complete — {count} jobs", [
+            'count' => count($normalizedJobs),
+        ]);
+
+        return $normalizedJobs;
+    }
+
+    /**
      * Full pipeline: fetch from source, normalize, store in DB.
      * Returns the count of jobs persisted.
      */
@@ -98,27 +173,15 @@ abstract class BaseJobSourceService
         ]);
 
         try {
-            $rawJobs = $this->fetchJobs($params);
-
-            Log::info("[JobSource:{$this->sourceName}] Fetched {count} raw jobs", [
-                'count' => count($rawJobs),
-            ]);
+            $normalizedJobs = $this->collectNormalized($params);
 
             $persisted = 0;
 
-            foreach ($rawJobs as $raw) {
-                try {
-                    $normalized = $this->normalizeJob($raw);
-                    $listing    = $this->persist($normalized);
+            foreach ($normalizedJobs as $normalized) {
+                $listing = $this->persist($normalized);
 
-                    if ($listing) {
-                        $persisted++;
-                    }
-                } catch (\Throwable $e) {
-                    Log::warning("[JobSource:{$this->sourceName}] Failed to normalize/persist a single job", [
-                        'error' => $e->getMessage(),
-                        'raw'   => array_slice($raw, 0, 5), // log only first 5 fields
-                    ]);
+                if ($listing) {
+                    $persisted++;
                 }
             }
 

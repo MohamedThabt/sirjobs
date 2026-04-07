@@ -3,9 +3,7 @@ import { Navbar } from '@/components/landing/Navbar';
 import Hero from '@/components/hero';
 import { Features } from '@/components/landing/Features';
 import { HowItWorks } from '@/components/landing/HowItWorks';
-import { ProductPreview } from '@/components/landing/ProductPreview';
 import { OpportunityRadar } from '@/components/landing/OpportunityRadar';
-import { Pricing } from '@/components/landing/Pricing';
 import { Footer } from '@/components/landing/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -28,9 +26,7 @@ export default function Landing() {
         <JobSourcesCloud />
         <Features />
         <HowItWorks />
-        <ProductPreview />
         <OpportunityRadar />
-        <Pricing />
         
         <Team />
         

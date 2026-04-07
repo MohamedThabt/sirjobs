@@ -15,8 +15,9 @@ class JobicyService extends BaseJobSourceService
             'count' => $this->config['count'] ?? 50,
         ];
 
-        if (! empty($params['job'])) {
-            $query['tag'] = $params['job'];
+        $searchTerm = $this->buildSearchTerm($params);
+        if ($searchTerm) {
+            $query['tag'] = $searchTerm;
         }
 
         if (! empty($params['location'])) {

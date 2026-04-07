@@ -21,6 +21,7 @@ async def collect_jobs(
     job_type: str | None = None,
     country_indeed: str | None = None,
     hours_old: int | None = None,
+    posted_days: int | None = Query(default=None, ge=1, le=7),
     is_remote: bool | None = None,
     google_search_term: str | None = None,
     linkedin_fetch_description: bool = False,
@@ -30,12 +31,6 @@ async def collect_jobs(
         description="Comma-separated site names to filter, e.g. 'linkedin,indeed,wuzzuf'",
     ),
 ):
-    """Collect jobs from all (or filtered) supported job board sites.
-
-    Returns an aggregated list of job listings matching the Laravel
-    ``job_listings`` table schema, plus a per-source status summary.
-    """
-    # Parse comma-separated sites into a list
     sites_list = (
         [s.strip() for s in sites.split(",") if s.strip()]
         if sites
@@ -49,6 +44,7 @@ async def collect_jobs(
         job_type=job_type,
         country_indeed=country_indeed,
         hours_old=hours_old,
+        posted_days=posted_days,
         is_remote=is_remote,
         google_search_term=google_search_term,
         linkedin_fetch_description=linkedin_fetch_description,

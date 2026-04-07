@@ -19,7 +19,6 @@ export function Navbar() {
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link href="#features" className="transition-colors hover:text-foreground/80 text-foreground/60">Features</Link>
             <Link href="#how-it-works" className="transition-colors hover:text-foreground/80 text-foreground/60">How it Works</Link>
-            <Link href="#pricing" className="transition-colors hover:text-foreground/80 text-foreground/60">Pricing</Link>
           </nav>
           <div className="flex items-center space-x-4 ml-6 cursor-pointer">
             <a href={typeof route !== 'undefined' ? route('login') : '/login'}>

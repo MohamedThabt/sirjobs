@@ -3,107 +3,111 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobListing;
-use App\Services\JobSourceManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class JobController extends Controller
 {
-    /**
-     * Display job listings. Only auto-collects if DB is empty.
-     */
     public function index(Request $request)
     {
-        $job      = $request->query('job');
-        $location = $request->query('location');
-        // Parse array of sources or just a single string, or default empty
-        $sources  = $request->query('sources', []);
-        $remote   = $request->query('remote') === 'true';
+        $request->validate([
+            'location'     => 'nullable|string|max:200',
+            'source'       => 'nullable|array',
+            'source.*'     => 'string|max:100',
+            'time'         => ['nullable', 'string', 'regex:/^\d+(h|d)$/'],
+            'role'         => 'nullable|string|max:100',
+            'tags'         => 'nullable|array',
+            'tags.*'       => 'string|max:100',
+            'remote'       => 'nullable',
+        ]);
+
+        $location    = $request->query('location');
+        $sources     = $request->query('source', []);
+        $time        = $request->query('time');
+        $role        = $request->query('role');
+        $tags        = $request->query('tags', []);
+        $remote      = $request->query('remote') === 'true';
 
         if (is_string($sources)) {
-            $sources = explode(',', $sources);
+            $sources = array_filter(explode(',', $sources));
+        }
+        if (is_string($tags)) {
+            $tags = array_filter(explode(',', $tags));
         }
 
-        $collectionResult = null;
+        $postedHours = null;
+        $postedDays  = null;
 
-        // Auto-fetch if completely empty
-        if (JobListing::count() === 0) {
-            $manager = new JobSourceManager();
-            $collectionResult = $manager->collectAll();
-            Log::info('[JobController] DB was empty, performed auto-collection', $collectionResult);
+        if (is_string($time) && preg_match('/^(\d+)(h|d)$/', $time, $matches)) {
+            $value = (int) $matches[1];
+            $unit  = $matches[2];
+
+            match ($unit) {
+                'h' => $postedHours = $value,
+                'd' => $postedDays = $value,
+            };
         }
 
-        // Available sources for filter UI
-        $availableSources = JobListing::select('source')
-            ->distinct()
-            ->pluck('source')
-            ->toArray();
+        if ($postedHours === null && $postedDays === null) {
+            $postedDays = 2;
+            $time = '2d';
+        }
 
-        // Extract distinct locations
-        $availableLocations = JobListing::whereNotNull('location')
-            ->where('location', '!=', '')
-            ->distinct()
-            ->pluck('location')
-            ->sort()
-            ->values()
-            ->toArray();
+        $jobs = JobListing::query()
+            ->location($location)
+            ->source($sources)
+            ->role($role)
+            ->tags($tags)
+            ->postedWithinHours($postedHours)
+            ->postedWithinDays($postedDays)
+            ->remoteOnly($remote)
+            ->orderByDesc('posted_at')
+            ->get();
 
-        // Extract distinct keywords (from tags) to populate dropdown
         $allTags = JobListing::whereNotNull('tags')->pluck('tags');
-        $availableKeywords = collect();
+        $availableTags = collect();
         foreach ($allTags as $tagsArray) {
             if (is_array($tagsArray)) {
                 foreach ($tagsArray as $tag) {
                     if (is_string($tag)) {
-                        $availableKeywords->push(strtolower($tag));
+                        $availableTags->push(strtolower($tag));
                     }
                 }
             }
         }
-        $availableKeywords = $availableKeywords->unique()->sort()->values()->toArray();
 
-        // Query persisted jobs from the database with filters
-        $jobs = JobListing::query()
-            ->search($job)
-            ->location($location)
-            ->source($sources)
-            ->remoteOnly($remote)
-            ->orderByDesc('posted_at')
-            ->limit(200)
-            ->get();
+        $filterOptions = [
+            'locations' => JobListing::whereNotNull('location')
+                ->where('location', '!=', '')
+                ->select('location')
+                ->distinct()
+                ->pluck('location')
+                ->sort()
+                ->values()
+                ->toArray(),
+            'sources' => JobListing::select('source')
+                ->distinct()
+                ->pluck('source')
+                ->sort()
+                ->values()
+                ->toArray(),
+            'tags' => $availableTags->unique()->sort()->values()->toArray(),
+        ];
 
         return Inertia::render('job/Index', [
-            'jobs'    => $jobs,
-            'filters' => [
-                'job'      => $job,
+            'jobs'          => $jobs,
+            'filters'       => [
                 'location' => $location,
-                'sources'  => $sources,
+                'source'   => $sources,
+                'time'     => $time,
+                'role'     => $role,
+                'tags'     => $tags,
                 'remote'   => $remote,
             ],
-            'availableSources'   => $availableSources,
-            'availableLocations' => $availableLocations,
-            'availableKeywords'  => $availableKeywords,
-            'stats'              => $collectionResult, // Only present if auto-collected
+            'filterOptions' => $filterOptions,
         ]);
     }
 
-    /**
-     * Force a refresh from all sources and redirect back to index.
-     */
-    public function refresh(Request $request)
-    {
-        $manager = new JobSourceManager();
-        $manager->collectAll();
-        
-        Log::info('[JobController] Manual refresh completed');
-
-        return redirect()->route('jobs.index');
-    }
-
-    /**
-     * Show a single job detail page.
-     */
     public function show(JobListing $job)
     {
         return Inertia::render('job/Show', [

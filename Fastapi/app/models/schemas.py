@@ -30,11 +30,20 @@ class CollectJobsRequest(BaseModel):
     job_type: str | None = None  # fulltime, parttime, internship, contract
     country_indeed: str | None = None
     hours_old: int | None = None
+    posted_days: int | None = Field(default=None, ge=1, le=7)
     is_remote: bool | None = None
     google_search_term: str | None = None
     linkedin_fetch_description: bool = False
     description_format: str = "markdown"
     sites: list[str] | None = None  # filter to specific site names; None = all
+
+    @property
+    def effective_hours_old(self) -> int | None:
+        if self.hours_old is not None:
+            return self.hours_old
+        if self.posted_days is not None:
+            return self.posted_days * 24
+        return None
 
 
 class SourceResult(BaseModel):

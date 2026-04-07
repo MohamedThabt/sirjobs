@@ -10,6 +10,7 @@ from app.services.collectors.jobspy_helpers import async_scrape_jobs, jobspy_df_
 class BaytCollectorService(BaseCollectorService):
     source_name = "bayt"
     region = "middle_east"
+    supports_native_date_filter = True
 
     async def _collect(self, params: CollectJobsRequest) -> list[JobListingResponse]:
         kwargs: dict = {
@@ -22,6 +23,8 @@ class BaytCollectorService(BaseCollectorService):
             kwargs["search_term"] = params.search_term
         if params.location:
             kwargs["location"] = params.location
+        if params.effective_hours_old:
+            kwargs["hours_old"] = params.effective_hours_old
 
         df = await async_scrape_jobs(kwargs)
         return jobspy_df_to_listings(df, self.source_name, self.region)

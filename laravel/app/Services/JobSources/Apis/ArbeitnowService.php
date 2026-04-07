@@ -13,11 +13,6 @@ class ArbeitnowService extends BaseJobSourceService
 
         $query = [];
 
-        if (! empty($params['job'])) {
-            // Arbeitnow doesn't have a search param — we'll filter client-side
-            Log::info("[JobSource:{$this->sourceName}] Job filter will be applied client-side");
-        }
-
         if (! empty($params['location'])) {
             $query['location'] = $params['location'];
         }
@@ -30,9 +25,9 @@ class ArbeitnowService extends BaseJobSourceService
         $data = $response->json();
         $jobs = $data['data'] ?? [];
 
-        // Client-side keyword filter if needed
-        if (! empty($params['job'])) {
-            $keyword = strtolower($params['job']);
+        $searchTerm = $this->buildSearchTerm($params);
+        if ($searchTerm) {
+            $keyword = strtolower($searchTerm);
             $jobs = array_filter($jobs, function ($job) use ($keyword) {
                 return str_contains(strtolower($job['title'] ?? ''), $keyword)
                     || str_contains(strtolower($job['description'] ?? ''), $keyword);

@@ -19,9 +19,9 @@ class TheMuseService extends BaseJobSourceService
             $query['api_key'] = $apiKey;
         }
 
-        if (! empty($params['job'])) {
-            // The Muse uses 'category' not free-text search
-            $query['category'] = $params['job'];
+        $searchTerm = $this->buildSearchTerm($params);
+        if ($searchTerm) {
+            $query['category'] = $searchTerm;
         }
 
         if (! empty($params['location'])) {

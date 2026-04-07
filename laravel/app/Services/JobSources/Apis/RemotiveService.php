@@ -11,8 +11,9 @@ class RemotiveService extends BaseJobSourceService
     {
         $query = [];
 
-        if (! empty($params['job'])) {
-            $query['search'] = $params['job'];
+        $searchTerm = $this->buildSearchTerm($params);
+        if ($searchTerm) {
+            $query['search'] = $searchTerm;
         }
 
         // Remotive is remote-only, but we can still pass category

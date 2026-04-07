@@ -36,6 +36,7 @@ _COUNTRY_CODE_MAP: dict[str, str] = {
 class IndeedCollectorService(BaseCollectorService):
     source_name = "indeed"
     region = "global"
+    supports_native_date_filter = True
 
     async def _collect(self, params: CollectJobsRequest) -> list[JobListingResponse]:
         kwargs: dict = {
@@ -52,8 +53,8 @@ class IndeedCollectorService(BaseCollectorService):
             kwargs["job_type"] = params.job_type
         if params.is_remote is not None:
             kwargs["is_remote"] = params.is_remote
-        if params.hours_old:
-            kwargs["hours_old"] = params.hours_old
+        if params.effective_hours_old:
+            kwargs["hours_old"] = params.effective_hours_old
         if params.country_indeed:
             # Normalize ISO-2 codes to full names jobspy understands
             country = _COUNTRY_CODE_MAP.get(

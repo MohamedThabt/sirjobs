@@ -25,8 +25,9 @@ class AdzunaService extends BaseJobSourceService
             'content-type'  => 'application/json',
         ];
 
-        if (! empty($params['job'])) {
-            $query['what'] = $params['job'];
+        $searchTerm = $this->buildSearchTerm($params);
+        if ($searchTerm) {
+            $query['what'] = $searchTerm;
         }
 
         if (! empty($params['location'])) {
